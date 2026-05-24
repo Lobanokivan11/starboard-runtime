@@ -81,8 +81,18 @@ RUN apt-get update && \
         libevdev2 \
         procps \
         binutils \
+        retroarch \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# RetroArch notes:
+#   - We install the stock Debian retroarch binary (no cores). PortMaster ports
+#     that wrap a libretro core bundle the core .so in the port's own libs/
+#     dir and point retroarch at it with `-L /path/to/core.so`. The frontend
+#     itself is the only system-wide piece needed.
+#   - retroarch writes its config to ~/.config/retroarch/ — `XDG_CONFIG_HOME`
+#     and `HOME` are already set per-launch by launcher.sh so this lands inside
+#     ipcDir, not in any user-visible path.
 
 # Install the JPEG 8 ABI library built above.
 # libjpeg62-turbo (above) provides libjpeg.so.62 / LIBJPEG_6.2.
