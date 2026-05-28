@@ -235,3 +235,16 @@ RUN chmod +x /usr/local/lib/starboard/gmloadernext.aarch64
 COPY rootfs-mount-wrapper.sh /usr/local/bin/mount
 RUN chmod +x /usr/local/bin/mount
 RUN printf '#!/bin/bash\nexit 0\n' > /usr/local/bin/umount && chmod +x /usr/local/bin/umount
+
+# /etc/starboard-release — version metadata read by the Android app
+# (EngineSetupRepository.rootfsRelease()) to display the installed runtime
+# version in Settings. Populated from build args passed by build-rootfs.sh,
+# which derive from CI env (GitHub Actions sets TAG / commit SHA / date).
+# Local docker builds get "dev" placeholders, which is fine — the file is
+# strictly informational on the device side.
+ARG STARBOARD_RELEASE=dev
+ARG STARBOARD_COMMIT=unknown
+ARG STARBOARD_BUILT=unknown
+RUN printf 'release=%s\ncommit=%s\nbuilt=%s\n' \
+        "$STARBOARD_RELEASE" "$STARBOARD_COMMIT" "$STARBOARD_BUILT" \
+        > /etc/starboard-release
