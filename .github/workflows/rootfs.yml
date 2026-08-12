@@ -85,6 +85,12 @@ jobs:
       - name: Rename artifact
         run: mv rootfs.tar.gz starboard-rootfs.tar.gz
 
+      - name: Generate SHA-256 sidecar
+        # The app downloads <asset>.sha256 next to the tarball and verifies
+        # the download (EngineSetupRepository in the app repo). Missing
+        # sidecar is non-fatal there, so releases predating this keep working.
+        run: sha256sum starboard-rootfs.tar.gz > starboard-rootfs.tar.gz.sha256
+
       - name: Publish release to public repo
         env:
           # Fine-grained PAT scoped to get-starboard/starboard-runtime with
@@ -96,9 +102,10 @@ jobs:
           RELEASE_REPO: get-starboard/starboard-runtime
         run: |
           if gh release view "$TAG" --repo "$RELEASE_REPO" >/dev/null 2>&1; then
-            gh release upload "$TAG" starboard-rootfs.tar.gz --repo "$RELEASE_REPO" --clobber
+            gh release upload "$TAG" starboard-rootfs.tar.gz starboard-rootfs.tar.gz.sha256 \
+              --repo "$RELEASE_REPO" --clobber
           else
-            gh release create "$TAG" starboard-rootfs.tar.gz \
+            gh release create "$TAG" starboard-rootfs.tar.gz starboard-rootfs.tar.gz.sha256 \
               --repo "$RELEASE_REPO" \
               --title "$TAG" \
               --notes "Automated rootfs build from commit ${{ github.sha }}" \

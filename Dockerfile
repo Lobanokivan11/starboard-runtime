@@ -209,10 +209,10 @@ RUN mkdir -p /opt/sb-virgl/dri /opt/sb-virgl/lib /opt/sb-virgl/bin && \
 # shim files are written by the app at first-launch (byte-array embedded in
 # libgame_bridge.so), so they're NOT created here.
 RUN mkdir -p /opt/system/Tools/PortMaster/libs /opt/system/Tools/PortMaster/utils && \
-    printf 'export LIBGL_ALWAYS_SOFTWARE=1\nexport GALLIUM_DRIVER=llvmpipe\n' \
-        > /opt/system/Tools/PortMaster/libgl_default.txt && \
     ln -sf /usr/bin/7zz     /opt/system/Tools/PortMaster/7zzs.aarch64 && \
     ln -sf /usr/bin/xdelta3 /opt/system/Tools/PortMaster/xdelta3
+
+COPY portmaster/libgl_default.txt /opt/system/Tools/PortMaster/libgl_default.txt
 
 # Love2D 11.5 runtime — pre-built binary + libs copied from scripts/runtimes/love_11.5.
 #   $controlfolder resolves to /opt/system/Tools/PortMaster on Starboard (matched by
