@@ -98,10 +98,17 @@ RUN apt-get update && \
 # libjpeg62-turbo (above) provides libjpeg.so.62 / LIBJPEG_6.2.
 # This adds libjpeg.so.8 / LIBJPEG_8.0 for ports that require it.
 COPY --from=libjpeg8-builder /build/libjpeg.so.8* /usr/lib/aarch64-linux-gnu/
+# Keep every symlink chain here at two hops or fewer. proot resolves paths
+# through its own translation layer and gives up at three chained hops with
+# errno 40 (ELOOP), where a normal loader allows about forty. libGLESv1_CM.so
+# used to point at libGLESv1_CM.so.1, which added a third hop on the way to
+# libOSMesa.so.8.0.0 and made every GLES1 port (Neverball, Neverputt) fail to
+# start. Both GLESv1 names carry the same OSMesa build, so the intermediate
+# link bought nothing but the conventional SONAME layering.
 RUN ldconfig && \
     ln -sf /usr/lib/aarch64-linux-gnu/dri /usr/lib/dri && \
     ln -sf libOSMesa.so.8 /usr/lib/aarch64-linux-gnu/libGLESv1_CM.so.1 && \
-    ln -sf libGLESv1_CM.so.1 /usr/lib/aarch64-linux-gnu/libGLESv1_CM.so && \
+    ln -sf libOSMesa.so.8 /usr/lib/aarch64-linux-gnu/libGLESv1_CM.so && \
     ln -sf libdrm.so.2 /usr/lib/aarch64-linux-gnu/libdrm.so && \
     ln -sf libEGL.so.1 /usr/lib/aarch64-linux-gnu/libEGL.so
 
