@@ -122,7 +122,7 @@ RUN ldconfig && \
 #   libflac8                       — bookworm ships libflac12
 #   libzip4 / libzip.so.4          — bookworm ships libzip5 only; newer gmloadernext.aarch64
 #                                    links against libzip.so.4
-RUN echo 'deb [arch=arm64] https://archive.debian.org/debian bullseye main contrib non-free non-free-firmware' \
+RUN echo 'deb [arch=arm64] https://archive.debian.org/debian bullseye main contrib non-free' \
         > /etc/apt/sources.list.d/bullseye.list && \
     printf 'Package: *\nPin: release n=bullseye\nPin-Priority: 100\n' \
         > /etc/apt/preferences.d/bullseye && \
