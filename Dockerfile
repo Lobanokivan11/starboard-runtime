@@ -122,7 +122,7 @@ RUN ldconfig && \
 #   libflac8                       — bookworm ships libflac12
 #   libzip4 / libzip.so.4          — bookworm ships libzip5 only; newer gmloadernext.aarch64
 #                                    links against libzip.so.4
-RUN echo 'deb [arch=arm64] https://archive.debian.org/debian bullseye main' \
+RUN echo 'deb [arch=arm64] https://archive.debian.org/debian bullseye main contrib non-free non-free-firmware' \
         > /etc/apt/sources.list.d/bullseye.list && \
     printf 'Package: *\nPin: release n=bullseye\nPin-Priority: 100\n' \
         > /etc/apt/preferences.d/bullseye && \
@@ -141,7 +141,7 @@ RUN echo 'deb [arch=arm64] https://archive.debian.org/debian bullseye main' \
 # (e.g. minetest's libcurl.so.4) require. Fully backwards-compatible with
 # anything compiled against 3.0.x.
 # trixie packages may carry a t64 suffix (64-bit time_t ABI transition).
-RUN echo 'deb [arch=arm64] http://deb.debian.org/debian trixie main' \
+RUN echo 'deb [arch=arm64] http://deb.debian.org/debian trixie main contrib non-free non-free-firmware' \
         > /etc/apt/sources.list.d/trixie.list && \
     printf 'Package: *\nPin: release n=trixie\nPin-Priority: 100\n' \
         > /etc/apt/preferences.d/trixie && \
